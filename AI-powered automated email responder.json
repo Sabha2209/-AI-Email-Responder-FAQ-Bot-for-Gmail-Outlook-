@@ -1,0 +1,126 @@
+{
+  "name": "AI-powered automated email responder",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -512,
+        -16
+      ],
+      "id": "b074be4a-7927-4b01-b80b-a8dfa795097a",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mVXOWGworvPRFAOG",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an AI email support assistant. Read the email below and respond politely like a customer support agent.\n\nEmail content:\n{{$json[\"text\"]}}\n\nIf the email is a greeting or query related to FAQ topics like pricing, availability, support, timings, features, etc., provide a relevant response. \nIf unclear, politely ask for clarification.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -304,
+        -16
+      ],
+      "id": "28b152a1-cdc9-4e48-89db-317ae0b6522b",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "2tYwT3WNJFQXBv4S",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger').item.json.From }}",
+        "subject": "={{ $('Gmail Trigger').item.json.Subject }}",
+        "message": "={{ $json.message.content }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "={{ $('Gmail Trigger').item.json.From }}",
+          "replyToSenderOnly": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        -16
+      ],
+      "id": "411d3826-08e3-42bc-a4d2-6cc349e75201",
+      "name": "Send a message",
+      "webhookId": "ff98fbd8-0293-44f7-a9f0-ea7002d58ac3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mVXOWGworvPRFAOG",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c576c4c7-fe10-475f-a36f-9e7349a8726c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0408736a4dd0b8a94207d49c6fe0dc62f63c8e6739f388f6407e2549f517f19b"
+  },
+  "id": "hp0GUbMtCOYvhXRj",
+  "tags": []
+}
