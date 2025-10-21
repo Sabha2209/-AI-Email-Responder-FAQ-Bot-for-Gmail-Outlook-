@@ -32,7 +32,8 @@ This project automates the process of responding to frequently asked email queri
 ---
 
 ## 📸 Example Workflow
-(Insert your screenshot here)
+pic would be uploaded in separated file
+
 
 ---
 
